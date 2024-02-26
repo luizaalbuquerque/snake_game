@@ -1,7 +1,9 @@
+# imports
 from tkinter import font
 import pygame
 import random
 
+# variables
 pygame.init()
 square_width = 750
 pixel_width = 50
@@ -9,23 +11,23 @@ screen = pygame.display.set_mode([square_width] * 2)
 clock = pygame.time.Clock()
 running = True
 
+# font of game over text 
 font = pygame.font.Font(None, 36)
 
+# randomly generate starting position 
 def generate_starting_position():
     position_range = (pixel_width // 2, square_width - pixel_width // 2, pixel_width)
     return [random.randrange(*position_range), random.randrange(*position_range)]
-
 
 def reset():
     target.center = generate_starting_position()
     snake_pixel.center = generate_starting_position()
     return snake_pixel.copy()
 
-
+#  funtion to define bounds of game 
 def is_out_of_bounds():
     return snake_pixel.bottom > square_width or snake_pixel.top < 0 \
         or snake_pixel.left < 0 or snake_pixel.right > square_width
-
 
 snake_pixel = pygame.rect.Rect([0, 0, pixel_width - 2, pixel_width - 2])
 snake_pixel.center = generate_starting_position()
@@ -33,6 +35,7 @@ snake = [snake_pixel.copy()]
 snake_direction = (0, 0)
 snake_length = 1
 
+# food creation 
 target = pygame.rect.Rect([0, 0, pixel_width - 2, pixel_width - 2])
 target.center = generate_starting_position()
 
@@ -77,6 +80,7 @@ while running:
             # Snake movement speed 
             speed += speed_increment
 
+        #  giving fuctionality to keys 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
             snake_direction = (0, -pixel_width)
@@ -87,11 +91,15 @@ while running:
         if keys[pygame.K_d]:
             snake_direction = (pixel_width, 0)
 
+
         for snake_part in snake:
+            #  defining snake color 
             pygame.draw.rect(screen, "green", snake_part)
 
+        # defining food color 
         pygame.draw.rect(screen, "red", target)
 
+        # adding over snake (after taking each target)
         snake_pixel.move_ip(snake_direction)
         snake.append(snake_pixel.copy())
         snake = snake[-snake_length:]
